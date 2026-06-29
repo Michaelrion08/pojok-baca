@@ -1,373 +1,1090 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pojok Baca Karangwaru - Anak Kreatif</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-dark-green: #155227;
-            --bg-light-green: #23743A;
-            --pill-brown: #864622;
-            --text-white: #FFFFFF;
-            
-            --card-blue: #6AC2F4;
-            --card-blue-inner: #F3EFE4;
-            --card-green: #9CCC5A;
-            --cat-yellow: #DFE867;
-            --cat-teal: #68D4B3;
-            --cat-purple: #C88DFA;
-            --cat-blue: #5EB4F4;
-            --nav-brown: #743B1D;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Pojok Baca Karangwaru</title>
+<style>
+  :root {
+    --ink: #1A2B1F;
+    --leaf: #2D6A4F;
+    --leaf-light: #40916C;
+    --sprout: #74C69D;
+    --paper: #F8F5EE;
+    --parchment: #EDE8DC;
+    --amber: #E9A825;
+    --amber-soft: #FBF0CC;
+    --red: #C0392B;
+    --red-soft: #FDECEA;
+    --gray: #6B7C75;
+    --border: #D4CFC4;
+    --white: #FFFFFF;
+    --shadow: 0 2px 12px rgba(26,43,31,0.10);
+    --shadow-up: 0 -2px 12px rgba(26,43,31,0.08);
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Nunito', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* TAMPILAN UNTUK PC & HP */
-        body {
-            background-color: #0b2b14; /* Latar belakang gelap jika dibuka di PC */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    position: relative;
+  }
 
-        .app-container {
-            width: 100%;
-            max-width: 480px; /* Batas maksimal lebar untuk PC */
-            height: 100vh;
-            background: linear-gradient(135deg, var(--bg-dark-green) 0%, #1e6631 50%, var(--bg-dark-green) 100%);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5); /* Efek bayangan di PC */
-        }
+  /* ─── HEADER ─── */
+  .header {
+    background: var(--leaf);
+    color: var(--white);
+    padding: 1rem 1.25rem 0.75rem;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: var(--shadow);
+  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; }
+  .header-brand { display: flex; align-items: center; gap: 0.5rem; }
+  .header-icon { font-size: 1.4rem; }
+  .header-title { font-size: 1rem; font-weight: 700; letter-spacing: -0.02em; }
+  .header-sub { font-size: 0.7rem; opacity: 0.75; margin-top: 1px; }
+  .header-badge {
+    background: var(--amber); color: var(--ink);
+    font-size: 0.65rem; font-weight: 700;
+    padding: 3px 8px; border-radius: 99px;
+    letter-spacing: 0.03em;
+  }
 
-        /* Area Konten yang Bisa di-Scroll */
-        .scrollable-content {
-            flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding-bottom: 30px; /* Jarak bawah sebelum nav */
-            scrollbar-width: none; /* Sembunyikan scrollbar di Firefox */
-        }
-        .scrollable-content::-webkit-scrollbar { display: none; } /* Sembunyikan scrollbar Chrome/Safari */
+  /* ─── NAV TABS ─── */
+  .nav {
+    display: flex;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 64px; z-index: 99;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .nav-btn {
+    flex: 1; padding: 0.65rem 0.25rem;
+    background: none; border: none; cursor: pointer;
+    font-size: 0.65rem; font-weight: 600;
+    color: var(--gray); letter-spacing: 0.02em;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    transition: color 0.15s;
+    border-bottom: 2.5px solid transparent;
+  }
+  .nav-btn .nav-icon { font-size: 1.15rem; }
+  .nav-btn.active { color: var(--leaf); border-bottom-color: var(--leaf); }
 
-        /* Halaman / Pages */
-        .page {
-            display: none; /* Sembunyikan semua halaman secara default */
-            animation: fadeIn 0.3s ease;
-        }
-        .page.active {
-            display: block; /* Tampilkan halaman yang aktif */
-        }
+  /* ─── PAGES ─── */
+  .page { display: none; padding: 1rem 1.1rem 6rem; min-height: calc(100vh - 120px); }
+  .page.active { display: block; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 1rem 1.1rem;
+    margin-bottom: 0.875rem;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em;
+    color: var(--gray); text-transform: uppercase; margin-bottom: 0.75rem;
+  }
 
-        /* --- ELEMEN DESAIN BERSAMA --- */
-        .bg-wave {
-            position: absolute; top: 20%; left: -20%; width: 140%; height: 400px;
-            background: radial-gradient(ellipse at center, rgba(35, 116, 58, 0.4) 0%, transparent 70%);
-            z-index: 0; pointer-events: none;
-        }
-        .header-top {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px; position: relative; z-index: 2;
-        }
-        .logo-pill {
-            background-color: var(--pill-brown); padding: 8px 16px; border-radius: 20px;
-            display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-        .logo-pill .text { color: var(--text-white); font-size: 11px; font-weight: 800; line-height: 1.2; }
-        .section-header { padding: 0 20px; position: relative; z-index: 2; margin-bottom: 15px; margin-top: 20px; }
-        .section-header h2 { color: var(--text-white); font-size: 18px; font-weight: 800; }
-        .section-header p { color: #D1E5D5; font-size: 12px; }
+  /* ─── STATS ROW ─── */
+  .stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.6rem; margin-bottom: 0.875rem; }
+  .stat-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 0.75rem 0.5rem;
+    text-align: center; box-shadow: var(--shadow);
+  }
+  .stat-num { font-size: 1.6rem; font-weight: 700; line-height: 1; color: var(--leaf); }
+  .stat-label { font-size: 0.6rem; color: var(--gray); margin-top: 3px; font-weight: 500; }
 
-        /* --- HALAMAN 1: HOME --- */
-        .hero-section { padding: 10px 20px; position: relative; z-index: 2; text-align: center; }
-        .hero-section h1 { color: var(--text-white); font-size: 22px; font-weight: 800; margin-bottom: 5px; }
-        .hero-section p { color: #D1E5D5; font-size: 13px; font-weight: 500; }
-        
-        .grandma-container { position: relative; height: 180px; width: 100%; z-index: 1; margin-top: 10px; display: flex; justify-content: flex-end; padding-right: 20px; }
-        .grandma-placeholder { font-size: 140px; position: absolute; bottom: -20px; right: 20px; line-height: 1; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3)); }
+  /* ─── SCANNER ─── */
+  .scanner-wrap {
+    background: var(--ink);
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 1/1;
+    margin-bottom: 0.875rem;
+  }
+  #qr-video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .scanner-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+  }
+  .scanner-frame {
+    width: 55%; height: 55%;
+    border: 2.5px solid var(--amber);
+    border-radius: 10px;
+    box-shadow: 0 0 0 9999px rgba(0,0,0,0.45);
+    position: relative;
+  }
+  .scanner-frame::before, .scanner-frame::after {
+    content: '';
+    position: absolute;
+    width: 18px; height: 18px;
+    border-color: var(--amber); border-style: solid;
+  }
+  .scanner-frame::before { top: -3px; left: -3px; border-width: 3px 0 0 3px; border-radius: 4px 0 0 0; }
+  .scanner-frame::after  { bottom: -3px; right: -3px; border-width: 0 3px 3px 0; border-radius: 0 0 4px 0; }
+  .scanner-pulse {
+    position: absolute; left: 0; right: 0; top: 0;
+    height: 2px; background: var(--amber);
+    animation: scan 2s linear infinite;
+  }
+  @keyframes scan { 0%{top:0} 100%{top:calc(100% - 2px)} }
+  .scanner-hint {
+    position: absolute; bottom: 0.75rem; left: 0; right: 0;
+    text-align: center; color: var(--white);
+    font-size: 0.72rem; opacity: 0.9;
+  }
 
-        .loans-carousel { display: flex; gap: 15px; padding: 0 20px 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; position: relative; z-index: 2; }
-        .loans-carousel::-webkit-scrollbar { display: none; }
-        .loan-card { min-width: 260px; background-color: var(--card-blue); border-radius: 20px; padding: 20px 15px; scroll-snap-align: start; position: relative; }
-        .loan-card-header { display: flex; justify-content: space-between; margin-bottom: 15px; }
-        .avatar-circle { width: 50px; height: 50px; background-color: #F6E9C8; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; border: 2px solid white; }
-        .id-badge { background-color: rgba(255,255,255,0.7); color: #333; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 800; }
-        .loan-card h3 { color: #113C52; font-size: 20px; font-weight: 900; line-height: 1.1; margin-bottom: 15px; }
-        
-        .ticket-inner { background-color: var(--card-blue-inner); border-radius: 12px; padding: 15px; position: relative; color: #333; }
-        .ticket-inner::before, .ticket-inner::after { content: ''; position: absolute; top: 50%; width: 20px; height: 20px; background-color: var(--card-blue); border-radius: 50%; transform: translateY(-50%); }
-        .ticket-inner::before { left: -10px; } .ticket-inner::after { right: -10px; }
-        .barcode-sim { height: 25px; width: 100%; background: repeating-linear-gradient(to right, #888 0, #888 2px, transparent 2px, transparent 4px, #888 4px, #888 5px, transparent 5px, transparent 7px); opacity: 0.5; margin-bottom: 10px; }
-        .btn-kembali { width: 100%; background-color: #8C4726; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 800; font-size: 14px; cursor: pointer; }
+  /* ─── FORM ELEMENTS ─── */
+  .form-group { margin-bottom: 0.75rem; }
+  .form-label { font-size: 0.72rem; font-weight: 600; color: var(--gray); margin-bottom: 4px; display: block; }
+  .form-input {
+    width: 100%; padding: 0.65rem 0.85rem;
+    border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+    font-size: 0.9rem; color: var(--ink);
+    background: var(--paper); outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus { border-color: var(--leaf-light); background: var(--white); }
+  .form-input::placeholder { color: #BABFB8; }
 
-        .categories-carousel { display: flex; gap: 15px; padding: 10px 20px 20px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; position: relative; z-index: 2; }
-        .categories-carousel::-webkit-scrollbar { display: none; }
-        .cat-card { min-width: 130px; border-radius: 15px; padding: 15px 12px; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: flex-end; height: 90px; }
-        .cat-icon { font-size: 24px; margin-bottom: auto; text-align: center; }
-        .cat-title { color: #113C52; font-size: 13px; font-weight: 800; line-height: 1.2; }
+  /* ─── BUTTONS ─── */
+  .btn {
+    width: 100%; padding: 0.8rem;
+    border: none; border-radius: var(--radius-sm);
+    font-size: 0.9rem; font-weight: 700;
+    cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-primary { background: var(--leaf); color: var(--white); }
+  .btn-primary:active { background: var(--ink); }
+  .btn-amber { background: var(--amber); color: var(--ink); }
+  .btn-amber:active { opacity: 0.85; }
+  .btn-outline {
+    background: none; border: 1.5px solid var(--leaf);
+    color: var(--leaf); font-weight: 600;
+  }
+  .btn-red { background: var(--red); color: var(--white); }
+  .btn-sm {
+    width: auto; padding: 0.4rem 0.85rem;
+    font-size: 0.75rem; font-weight: 600;
+    border-radius: 99px;
+  }
+  .btn:disabled { opacity: 0.45; pointer-events: none; }
 
-        /* --- HALAMAN 2: KATALOG --- */
-        .search-bar { margin: 0 20px 20px; position: relative; z-index: 2; }
-        .search-bar input { width: 100%; padding: 15px 20px 15px 45px; border-radius: 25px; border: none; font-size: 14px; font-weight: 700; color: #333; outline: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .search-bar .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-size: 18px; }
-        
-        .book-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px 20px; position: relative; z-index: 2; }
-        .book-item { background: white; border-radius: 15px; padding: 10px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .book-cover-sim { height: 120px; border-radius: 10px; background-color: var(--cat-yellow); display: flex; justify-content: center; align-items: center; font-size: 40px; margin-bottom: 10px; }
-        .book-item h4 { font-size: 13px; font-weight: 800; color: #333; line-height: 1.2; margin-bottom: 5px; }
-        .book-item p { font-size: 10px; color: #666; margin-bottom: 8px; }
-        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 10px; font-size: 10px; font-weight: 800; }
-        .status-ada { background-color: #D6EBAE; color: #2F4D12; }
-        .status-dipinjam { background-color: #FEE2E2; color: #991B1B; }
+  /* ─── RESULT CARD ─── */
+  .result-card {
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+    margin-bottom: 0.875rem;
+    border: 1.5px solid var(--border);
+  }
+  .result-card.success { background: #EBF7F1; border-color: var(--sprout); }
+  .result-card.error   { background: var(--red-soft); border-color: #E88; }
+  .result-card.info    { background: var(--amber-soft); border-color: var(--amber); }
+  .result-book-title { font-size: 1rem; font-weight: 700; margin-bottom: 3px; }
+  .result-meta { font-size: 0.78rem; color: var(--gray); }
+  .result-status {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 0.72rem; font-weight: 700; padding: 3px 9px;
+    border-radius: 99px; margin-top: 6px;
+  }
+  .status-available { background: #D1FAE5; color: #065F46; }
+  .status-borrowed  { background: #FEE2E2; color: #991B1B; }
 
-        /* --- HALAMAN 3: SCAN PINJAM --- */
-        .scanner-container { padding: 20px; text-align: center; position: relative; z-index: 2; }
-        .scanner-box { width: 100%; max-width: 300px; height: 300px; margin: 20px auto; background-color: rgba(0,0,0,0.5); border-radius: 20px; position: relative; border: 4px dashed var(--cat-yellow); overflow: hidden; display: flex; justify-content: center; align-items: center; }
-        .scanner-line { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background-color: #FF3B30; box-shadow: 0 0 10px #FF3B30; animation: scan 2s infinite linear; }
-        @keyframes scan { 0% { top: 10%; } 50% { top: 90%; } 100% { top: 10%; } }
-        .manual-input { background: white; border-radius: 15px; padding: 20px; margin-top: 20px; }
-        .manual-input h3 { font-size: 14px; font-weight: 800; color: #333; margin-bottom: 10px; }
-        .manual-input input { width: 100%; padding: 12px; border: 2px solid #EEE; border-radius: 10px; font-size: 14px; margin-bottom: 10px; outline: none; }
-        .manual-input button { width: 100%; background: var(--card-blue); color: #113C52; border: none; padding: 12px; border-radius: 10px; font-weight: 800; cursor: pointer; }
+  /* ─── BOOK LIST ─── */
+  .book-item {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--parchment);
+  }
+  .book-item:last-child { border-bottom: none; }
+  .book-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--parchment); color: var(--gray);
+    font-size: 0.7rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .book-info { flex: 1; min-width: 0; }
+  .book-title { font-size: 0.875rem; font-weight: 600; line-height: 1.3; }
+  .book-author { font-size: 0.72rem; color: var(--gray); margin-top: 1px; }
+  .book-id { font-size: 0.65rem; color: var(--border); margin-top: 2px; font-family: monospace; }
 
-        /* --- HALAMAN 4: PROFIL --- */
-        .profile-header { text-align: center; padding: 20px; position: relative; z-index: 2; }
-        .profile-avatar { width: 90px; height: 90px; background-color: white; border-radius: 50%; margin: 0 auto 10px; display: flex; justify-content: center; align-items: center; font-size: 45px; border: 4px solid var(--card-green); }
-        .profile-header h2 { color: white; font-size: 20px; font-weight: 900; }
-        .profile-header p { color: var(--card-green); font-size: 12px; font-weight: 700; }
-        
-        .profile-menu { background: white; border-radius: 20px; margin: 0 20px 20px; padding: 10px; position: relative; z-index: 2; }
-        .menu-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid #EEE; cursor: pointer; }
-        .menu-item:last-child { border-bottom: none; }
-        .menu-icon { font-size: 20px; }
-        .menu-text { flex: 1; font-size: 14px; font-weight: 800; color: #333; }
-        .menu-arrow { color: #CCC; font-weight: 800; }
+  /* ─── BORROW LOG ─── */
+  .log-item {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--parchment);
+  }
+  .log-item:last-child { border-bottom: none; }
+  .log-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--sprout); flex-shrink: 0; margin-top: 5px;
+  }
+  .log-dot.returned { background: var(--border); }
+  .log-name { font-size: 0.85rem; font-weight: 600; }
+  .log-book { font-size: 0.75rem; color: var(--gray); }
+  .log-time { font-size: 0.65rem; color: var(--border); margin-top: 2px; }
+  .log-badge {
+    margin-left: auto; font-size: 0.62rem; font-weight: 700;
+    padding: 2px 7px; border-radius: 99px; white-space: nowrap;
+  }
+  .badge-active   { background: #D1FAE5; color: #065F46; }
+  .badge-returned { background: var(--parchment); color: var(--gray); }
 
-        /* --- BOTTOM NAV --- */
-        .bottom-nav {
-            position: absolute; /* Tetap di bawah dalam kontainer 480px */
-            bottom: 0; width: 100%; background-color: var(--nav-brown);
-            display: flex; justify-content: space-around; align-items: center;
-            padding: 12px 0 20px; border-top-left-radius: 20px; border-top-right-radius: 20px;
-            z-index: 100; box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
-        }
-        .nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #CBAA96; font-size: 10px; font-weight: 700; gap: 4px; cursor: pointer; transition: 0.2s; }
-        .nav-item.active { color: #9CCC5A; transform: translateY(-3px); }
-        .nav-icon { font-size: 22px; }
+  /* ─── SEARCH ─── */
+  .search-wrap { position: relative; margin-bottom: 0.75rem; }
+  .search-icon { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--gray); font-size: 0.9rem; }
+  .search-input {
+    width: 100%; padding: 0.65rem 0.85rem 0.65rem 2.2rem;
+    border: 1.5px solid var(--border); border-radius: 99px;
+    font-size: 0.875rem; background: var(--white); outline: none;
+  }
+  .search-input:focus { border-color: var(--leaf-light); }
 
-    </style>
+  /* ─── ADMIN ─── */
+  .admin-locked {
+    text-align: center; padding: 2rem 1rem;
+  }
+  .admin-lock-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+  .admin-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .admin-desc { font-size: 0.8rem; color: var(--gray); margin-bottom: 1.25rem; }
+
+  /* ─── EMPTY STATE ─── */
+  .empty { text-align: center; padding: 2.5rem 1rem; color: var(--gray); }
+  .empty-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .empty-text { font-size: 0.85rem; }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: var(--white);
+    padding: 0.65rem 1.25rem; border-radius: 99px;
+    font-size: 0.82rem; font-weight: 500;
+    opacity: 0; transition: all 0.25s; pointer-events: none;
+    white-space: nowrap; z-index: 999; max-width: 90vw;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.success { background: #065F46; }
+  .toast.error   { background: var(--red); }
+
+  /* ─── SECTION TITLE ─── */
+  .section-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.875rem; color: var(--ink); }
+  .section-hint  { font-size: 0.75rem; color: var(--gray); margin-bottom: 0.875rem; line-height: 1.5; }
+
+  /* ─── MODE TOGGLE ─── */
+  .mode-toggle {
+    display: flex; gap: 0.5rem; margin-bottom: 1rem;
+  }
+  .mode-btn {
+    flex: 1; padding: 0.55rem; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border); background: var(--white);
+    font-size: 0.78rem; font-weight: 600; color: var(--gray); cursor: pointer;
+    transition: all 0.15s;
+  }
+  .mode-btn.active { background: var(--leaf); color: var(--white); border-color: var(--leaf); }
+
+  /* ─── QR DISPLAY ─── */
+  .qr-display {
+    background: var(--white); border-radius: var(--radius);
+    border: 1px solid var(--border); padding: 1rem;
+    text-align: center; margin-bottom: 0.875rem;
+  }
+  .qr-display img { width: 140px; height: 140px; margin-bottom: 0.5rem; image-rendering: pixelated; }
+  .qr-book-name { font-size: 0.85rem; font-weight: 600; }
+  .qr-book-id { font-size: 0.7rem; color: var(--gray); font-family: monospace; }
+
+  /* ─── BOTTOM NAV SPACER ─── */
+  .spacer { height: 4rem; }
+
+  .divider { height: 1px; background: var(--parchment); margin: 0.75rem 0; }
+
+  /* Loader */
+  .spinner {
+    width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white; border-radius: 50%;
+    animation: spin 0.7s linear infinite; display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="bg-wave"></div>
-
-    <div class="scrollable-content">
-
-        <div id="page-home" class="page active">
-            <header class="header-top">
-                <div class="logo-pill">
-                    <span class="icon">📖</span><span class="text">PERPUSTAKAAN<br>ANAK KREATIF</span>
-                </div>
-            </header>
-
-            <section class="hero-section">
-                <h1>Ayo Temukan Petualangan Baru!</h1>
-                <p>Selamat Datang Kembali, <strong>Bernardino Michael.</strong></p>
-            </section>
-
-            <div class="grandma-container">
-                <div class="grandma-placeholder">👵🏼</div> 
-            </div>
-
-            <div class="section-header">
-                <h2>Buku yang Kamu Pinjam</h2><p>Total Pinjam : 1 buah</p>
-            </div>
-
-            <div class="loans-carousel">
-                <div class="loan-card">
-                    <div class="loan-card-header"><div class="avatar-circle">🐢</div><div class="id-badge">ID: BK001</div></div>
-                    <h3>Franklin Tidak<br>Tidur</h3>
-                    <div class="ticket-inner">
-                        <div style="font-size:13px; font-weight:600; margin-bottom:10px;">Pinjam: 17 Jun 2026<br>Jatuh tempo: 17 Jul 2026</div>
-                        <div class="barcode-sim"></div>
-                        <div style="font-size:13px; font-weight:700; margin-bottom:12px;">Denda: Rp 0</div>
-                        <button class="btn-kembali" onclick="alert('Mengembalikan buku...')">Kembali</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="categories-carousel">
-                <div class="cat-card" style="background-color: var(--cat-yellow);">
-                    <div class="cat-icon">🏠</div><div class="cat-title">Si Kancil<br>dan Petani</div>
-                </div>
-                <div class="cat-card" style="background-color: var(--cat-teal);">
-                    <div class="cat-icon">🦕</div><div class="cat-title">Ensiklopedia<br>Mini Binatang</div>
-                </div>
-                <div class="cat-card" style="background-color: var(--cat-purple);">
-                    <div class="cat-icon">📘</div><div class="cat-title">Fiksi<br>Anak-anak</div>
-                </div>
-            </div>
-            
-            <div style="text-align:center; color:#A1C6A9; font-size:10px; margin-top:10px;">
-                © 2026 Perpustakaan Anak Kreatif.
-            </div>
-        </div>
-
-        <div id="page-catalog" class="page">
-            <header class="header-top">
-                <div class="logo-pill"><span class="icon">🔍</span><span class="text">CARI BUKU</span></div>
-            </header>
-
-            <div class="search-bar">
-                <span class="search-icon">🔎</span>
-                <input type="text" placeholder="Cari judul buku atau pengarang...">
-            </div>
-
-            <div class="categories-carousel" style="padding-top: 0; padding-bottom: 10px;">
-                <div class="status-badge status-ada" style="font-size:12px; padding:8px 15px;">Semua Buku</div>
-                <div class="status-badge" style="background:white; color:#333; font-size:12px; padding:8px 15px;">Fiksi Anak</div>
-                <div class="status-badge" style="background:white; color:#333; font-size:12px; padding:8px 15px;">Sains</div>
-            </div>
-
-            <div class="book-grid">
-                <div class="book-item">
-                    <div class="book-cover-sim" style="background-color: var(--cat-yellow);">🏠</div>
-                    <h4>Si Kancil & Petani</h4>
-                    <p>Cerita Rakyat</p>
-                    <div class="status-badge status-ada">✅ Tersedia</div>
-                </div>
-                <div class="book-item">
-                    <div class="book-cover-sim" style="background-color: var(--cat-green);">📐</div>
-                    <h4>Matematika Seru</h4>
-                    <p>Tim Erlangga</p>
-                    <div class="status-badge status-dipinjam">📤 Dipinjam</div>
-                </div>
-                <div class="book-item">
-                    <div class="book-cover-sim" style="background-color: var(--cat-teal);">🦕</div>
-                    <h4>Mini Binatang</h4>
-                    <p>NatGeo Kids</p>
-                    <div class="status-badge status-ada">✅ Tersedia</div>
-                </div>
-                <div class="book-item">
-                    <div class="book-cover-sim" style="background-color: var(--card-blue);">🐢</div>
-                    <h4>Franklin Tidak Tidur</h4>
-                    <p>Paulette B.</p>
-                    <div class="status-badge status-dipinjam">📤 Dipinjam</div>
-                </div>
-            </div>
-        </div>
-
-        <div id="page-borrow" class="page">
-            <header class="header-top">
-                <div class="logo-pill"><span class="icon">📷</span><span class="text">PINJAM BUKU</span></div>
-            </header>
-
-            <div class="scanner-container">
-                <h2 style="color:white; font-size:18px; font-weight:800; margin-bottom:10px;">Arahkan ke QR Code</h2>
-                <p style="color:#D1E5D5; font-size:12px;">Posisikan QR Code di sampul buku ke dalam kotak di bawah ini.</p>
-                
-                <div class="scanner-box">
-                    <div style="color:rgba(255,255,255,0.3); font-size:50px;">📷</div>
-                    <div class="scanner-line"></div>
-                </div>
-
-                <div class="manual-input">
-                    <h3>Atau Ketik ID Buku</h3>
-                    <input type="text" placeholder="Contoh: BK001">
-                    <button onclick="alert('Mencari buku...')">Cari Buku</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="page-profile" class="page">
-            <header class="header-top">
-                <div class="logo-pill"><span class="icon">👦</span><span class="text">PROFIL SAYA</span></div>
-            </header>
-
-            <div class="profile-header">
-                <div class="profile-avatar">👦</div>
-                <h2>Bernardino Michael</h2>
-                <p>ID: AG001 • RT 04 Karangwaru</p>
-            </div>
-
-            <div class="profile-menu">
-                <div class="menu-item" onclick="navigate('page-home')">
-                    <div class="menu-icon">📚</div>
-                    <div class="menu-text">Buku Sedang Dipinjam</div>
-                    <div class="menu-arrow">></div>
-                </div>
-                <div class="menu-item" onclick="alert('Membuka riwayat...')">
-                    <div class="menu-icon">📋</div>
-                    <div class="menu-text">Riwayat Membaca (5 Buku)</div>
-                    <div class="menu-arrow">></div>
-                </div>
-                <div class="menu-item" onclick="alert('Membuka pengaturan...')">
-                    <div class="menu-icon">⚙️</div>
-                    <div class="menu-text">Pengaturan Akun</div>
-                    <div class="menu-arrow">></div>
-                </div>
-            </div>
-            
-            <div style="padding: 0 20px;">
-                <button style="width:100%; background:#8C4726; color:white; border:none; padding:15px; border-radius:15px; font-weight:800; cursor:pointer;" onclick="alert('Keluar dari akun...')">Keluar / Logout</button>
-            </div>
-        </div>
-
-    </div> <nav class="bottom-nav">
-        <div class="nav-item active" id="nav-home" onclick="navigate('page-home')">
-            <span class="nav-icon">👵🏼</span><span>Home</span>
-        </div>
-        <div class="nav-item" id="nav-catalog" onclick="navigate('page-catalog')">
-            <span class="nav-icon">📚</span><span>Catalog</span>
-        </div>
-        <div class="nav-item" id="nav-borrow" onclick="navigate('page-borrow')">
-            <span class="nav-icon">📷</span><span>Borrow</span>
-        </div>
-        <div class="nav-item" id="nav-profile" onclick="navigate('page-profile')">
-            <span class="nav-icon">👦</span><span>Profil</span>
-        </div>
-    </nav>
-
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div class="header-brand">
+      <span class="header-icon">📚</span>
+      <div>
+        <div class="header-title">Pojok Baca Karangwaru</div>
+        <div class="header-sub">RW 04 · Sistem Peminjaman Mandiri</div>
+      </div>
+    </div>
+    <span class="header-badge" id="online-badge">ONLINE</span>
+  </div>
 </div>
 
+<!-- NAV -->
+<div class="nav">
+  <button class="nav-btn active" onclick="showPage('home')" id="nav-home">
+    <span class="nav-icon">🏠</span> Beranda
+  </button>
+  <button class="nav-btn" onclick="showPage('scan')" id="nav-scan">
+    <span class="nav-icon">📷</span> Pinjam
+  </button>
+  <button class="nav-btn" onclick="showPage('katalog')" id="nav-katalog">
+    <span class="nav-icon">🔍</span> Katalog
+  </button>
+  <button class="nav-btn" onclick="showPage('admin')" id="nav-admin">
+    <span class="nav-icon">⚙️</span> Admin
+  </button>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!--  PAGE: BERANDA                     -->
+<!-- ══════════════════════════════════ -->
+<div class="page active" id="page-home">
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num" id="stat-total">—</div>
+      <div class="stat-label">Total Buku</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-available" style="color:var(--leaf)">—</div>
+      <div class="stat-label">Tersedia</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-borrowed" style="color:var(--amber)">—</div>
+      <div class="stat-label">Dipinjam</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Cara Pakai</div>
+    <div style="display:flex;flex-direction:column;gap:0.6rem;">
+      <div style="display:flex;gap:0.65rem;align-items:flex-start">
+        <div style="width:24px;height:24px;border-radius:50%;background:var(--leaf);color:white;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
+        <div style="font-size:0.82rem;color:var(--gray);line-height:1.45">Ketuk tab <strong style="color:var(--ink)">Pinjam</strong>, lalu arahkan kamera ke QR Code di sampul buku</div>
+      </div>
+      <div style="display:flex;gap:0.65rem;align-items:flex-start">
+        <div style="width:24px;height:24px;border-radius:50%;background:var(--leaf);color:white;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
+        <div style="font-size:0.82rem;color:var(--gray);line-height:1.45">Ketik nama kamu, lalu tekan <strong style="color:var(--ink)">Pinjam Sekarang</strong></div>
+      </div>
+      <div style="display:flex;gap:0.65rem;align-items:flex-start">
+        <div style="width:24px;height:24px;border-radius:50%;background:var(--leaf);color:white;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div>
+        <div style="font-size:0.82rem;color:var(--gray);line-height:1.45">Untuk mengembalikan, scan lagi QR Code buku dan pilih <strong style="color:var(--ink)">Kembalikan</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Aktivitas Terakhir</div>
+    <div id="recent-log">
+      <div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Belum ada aktivitas</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!--  PAGE: SCAN / PINJAM               -->
+<!-- ══════════════════════════════════ -->
+<div class="page" id="page-scan">
+  <p class="section-hint">Arahkan kamera ke QR Code yang ditempel di sampul buku. Scanner akan otomatis membaca kodenya.</p>
+
+  <div class="scanner-wrap">
+    <video id="qr-video" playsinline autoplay muted></video>
+    <div class="scanner-overlay">
+      <div class="scanner-frame">
+        <div class="scanner-pulse"></div>
+      </div>
+    </div>
+    <div class="scanner-hint" id="scanner-hint">🎯 Arahkan ke QR Code buku</div>
+  </div>
+
+  <!-- Manual fallback -->
+  <div class="card" style="margin-bottom:0.875rem">
+    <div class="card-title">Atau Masukkan ID Buku Manual</div>
+    <div style="display:flex;gap:0.5rem">
+      <input class="form-input" id="manual-id" placeholder="contoh: BK001" style="flex:1">
+      <button class="btn btn-outline btn-sm" onclick="lookupManual()" style="white-space:nowrap;padding:0 1rem">Cari</button>
+    </div>
+  </div>
+
+  <!-- Book result -->
+  <div id="book-result" style="display:none">
+    <div class="result-card info" id="book-result-inner">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem">
+        <div>
+          <div class="result-book-title" id="res-title">—</div>
+          <div class="result-meta" id="res-author">—</div>
+          <div class="result-meta" id="res-category" style="margin-top:2px">—</div>
+        </div>
+        <div>
+          <div class="result-status" id="res-status">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Borrow form -->
+    <div id="borrow-form" class="card" style="display:none">
+      <div class="card-title">Pinjam Buku Ini</div>
+      <div class="form-group">
+        <label class="form-label">Nama Peminjam</label>
+        <input class="form-input" id="borrower-name" placeholder="Masukkan nama lengkap...">
+      </div>
+      <button class="btn btn-primary" onclick="submitBorrow()">
+        <span>📖</span> Pinjam Sekarang
+      </button>
+    </div>
+
+    <!-- Return form -->
+    <div id="return-form" class="card" style="display:none">
+      <div class="card-title">Kembalikan Buku</div>
+      <div style="font-size:0.82rem;color:var(--gray);margin-bottom:0.75rem" id="return-info">—</div>
+      <button class="btn btn-amber" onclick="submitReturn()">
+        <span>✅</span> Kembalikan Buku Ini
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!--  PAGE: KATALOG                     -->
+<!-- ══════════════════════════════════ -->
+<div class="page" id="page-katalog">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="search-input" placeholder="Cari judul atau pengarang..." oninput="filterBooks()">
+  </div>
+
+  <div style="display:flex;gap:0.4rem;margin-bottom:0.875rem;flex-wrap:wrap" id="filter-row">
+    <button class="btn btn-sm btn-outline active-filter" onclick="setFilter('all',this)" style="font-size:0.7rem">Semua</button>
+    <button class="btn btn-sm btn-outline" onclick="setFilter('Tersedia',this)" style="font-size:0.7rem;color:var(--leaf);border-color:var(--leaf)">✅ Tersedia</button>
+    <button class="btn btn-sm btn-outline" onclick="setFilter('Dipinjam',this)" style="font-size:0.7rem;color:var(--red);border-color:var(--red)">📤 Dipinjam</button>
+  </div>
+
+  <div id="book-list">
+    <div class="empty"><div class="empty-icon">📚</div><div class="empty-text">Memuat katalog...</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!--  PAGE: ADMIN                       -->
+<!-- ══════════════════════════════════ -->
+<div class="page" id="page-admin">
+  <div id="admin-locked-view">
+    <div class="admin-locked">
+      <div class="admin-lock-icon">🔐</div>
+      <div class="admin-title">Area Admin</div>
+      <div class="admin-desc">Masukkan PIN untuk mengakses panel pengelolaan perpustakaan</div>
+      <div class="form-group" style="text-align:left">
+        <label class="form-label">PIN Admin</label>
+        <input class="form-input" id="admin-pin" type="password" placeholder="••••" maxlength="6" style="text-align:center;font-size:1.2rem;letter-spacing:0.3em">
+      </div>
+      <button class="btn btn-primary" onclick="checkPin()">Masuk</button>
+    </div>
+  </div>
+
+  <div id="admin-panel" style="display:none">
+    <div class="section-title">Panel Admin</div>
+
+    <!-- Mode Tabs -->
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="adminTab('tambah',this)">➕ Tambah Buku</button>
+      <button class="mode-btn" onclick="adminTab('log',this)">📋 Log Pinjam</button>
+      <button class="mode-btn" onclick="adminTab('qr',this)">🏷️ Cetak QR</button>
+    </div>
+
+    <!-- Tab: Tambah Buku -->
+    <div id="tab-tambah">
+      <div class="card">
+        <div class="card-title">Data Buku Baru</div>
+        <div class="form-group">
+          <label class="form-label">ID Buku (unik)</label>
+          <input class="form-input" id="new-id" placeholder="BK001" oninput="this.value=this.value.toUpperCase()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Judul Buku</label>
+          <input class="form-input" id="new-title" placeholder="Judul lengkap buku...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Pengarang</label>
+          <input class="form-input" id="new-author" placeholder="Nama pengarang...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Kategori</label>
+          <input class="form-input" id="new-category" placeholder="Fiksi / Sains / Komik / dll">
+        </div>
+        <button class="btn btn-primary" onclick="addBook()" id="btn-add-book">
+          ➕ Tambah ke Katalog
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab: Log -->
+    <div id="tab-log" style="display:none">
+      <div class="card">
+        <div class="card-title">Riwayat Peminjaman</div>
+        <div id="full-log">
+          <div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Memuat riwayat...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: QR Print -->
+    <div id="tab-qr" style="display:none">
+      <div class="card">
+        <div class="card-title">Generate & Cetak QR Code</div>
+        <p style="font-size:0.78rem;color:var(--gray);margin-bottom:0.75rem;line-height:1.5">Pilih buku lalu cetak QR Code-nya. Tempel stiker di sampul belakang buku.</p>
+        <div class="form-group">
+          <label class="form-label">Pilih Buku</label>
+          <select class="form-input" id="qr-select" onchange="previewQR()">
+            <option value="">— Pilih buku —</option>
+          </select>
+        </div>
+        <div id="qr-preview" style="display:none">
+          <div class="qr-display">
+            <img id="qr-img" src="" alt="QR Code">
+            <div class="qr-book-name" id="qr-book-name">—</div>
+            <div class="qr-book-id" id="qr-book-id">—</div>
+          </div>
+          <button class="btn btn-primary" onclick="printQR()">🖨️ Cetak QR Code</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:0.875rem">
+      <button class="btn btn-outline" onclick="adminLogout()">🚪 Keluar dari Admin</button>
+    </div>
+  </div>
+</div>
+
+<div class="spacer"></div>
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════ -->
+<!--  JAVASCRIPT                        -->
+<!-- ══════════════════════════════════ -->
 <script>
-    function navigate(pageId) {
-        // 1. Sembunyikan semua halaman
-        const pages = document.querySelectorAll('.page');
-        pages.forEach(page => page.classList.remove('active'));
+// ─────────────────────────────────────────────────────
+//  CONFIG — Ganti dengan URL Google Sheets Web App kamu
+// ─────────────────────────────────────────────────────
+const CONFIG = {
+  // Setelah deploy Google Apps Script, tempel URL di sini:
+  SHEETS_URL: 'https://script.google.com/macros/s/AKfycbxwtQWWJrX-iVFKP1zWUrGx7icZEpicTwkjrdoTsYzBZ5EhEJU8nok5T3bBPONiZbYU/exec',
+  ADMIN_PIN: '5678',  // Ganti PIN admin sesuai kebutuhan
+  LIB_NAME: 'Pojok Baca Karangwaru RW 04',
+};
 
-        // 2. Hilangkan warna aktif dari semua tombol menu bawah
-        const navItems = document.querySelectorAll('.nav-item');
-        navItems.forEach(nav => nav.classList.remove('active'));
+// ─────────────────────────────────────────────────────
+//  LOCAL DATA STORE (Bekerja offline + sync ke Sheets)
+// ─────────────────────────────────────────────────────
+let DB = {
+  books: [], // [{id, title, author, category, status}]
+  logs:  [], // [{id, bookId, bookTitle, borrower, borrowDate, returnDate, status}]
+};
 
-        // 3. Tampilkan halaman yang diklik
-        document.getElementById(pageId).classList.add('active');
+// Demo data (dipakai ketika Sheets belum dikonfigurasi)
+const DEMO_BOOKS = [
+  { id:'BK001', title:'Si Kancil dan Petani', author:'Cerita Rakyat Nusantara', category:'Fiksi Anak', status:'Tersedia' },
+  { id:'BK002', title:'Matematika Seru Kelas 4', author:'Tim Erlangga', category:'Pelajaran', status:'Dipinjam' },
+  { id:'BK003', title:'Ensiklopedia Mini Binatang', author:'National Geographic Kids', category:'Sains', status:'Tersedia' },
+  { id:'BK004', title:'Komik Sains: Tubuh Manusia', author:'Isao Togashi', category:'Komik', status:'Tersedia' },
+  { id:'BK005', title:'Belajar Berkebun di Rumah', author:'Andry Wijaya', category:'Keterampilan', status:'Tersedia' },
+  { id:'BK006', title:'Dongeng 1001 Malam Anak', author:'Berbagai Pengarang', category:'Fiksi Anak', status:'Dipinjam' },
+];
+const DEMO_LOGS = [
+  { id:'L001', bookId:'BK002', bookTitle:'Matematika Seru Kelas 4', borrower:'Dika Putra', borrowDate:'2025-07-01 09:15', returnDate:null, status:'Aktif' },
+  { id:'L002', bookId:'BK006', bookTitle:'Dongeng 1001 Malam Anak', borrower:'Sari Dewi', borrowDate:'2025-07-02 14:30', returnDate:null, status:'Aktif' },
+  { id:'L003', bookId:'BK001', bookTitle:'Si Kancil dan Petani', borrower:'Budi Santoso', borrowDate:'2025-06-28 10:00', returnDate:'2025-07-01 11:20', status:'Dikembalikan' },
+];
 
-        // 4. Beri warna aktif pada tombol menu yang sesuai
-        const activeNavId = pageId.replace('page-', 'nav-');
-        document.getElementById(activeNavId).classList.add('active');
-        
-        // 5. Scroll ke atas saat pindah halaman
-        document.querySelector('.scrollable-content').scrollTop = 0;
-    }
+let filterStatus = 'all';
+let activeBookId = null;
+let scanStream = null;
+let scanInterval = null;
+let isAdminLoggedIn = false;
+
+// ─────────────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────────────
+window.onload = async () => {
+  loadLocalData();
+  await fetchFromSheets();
+  renderHome();
+  renderKatalog();
+};
+
+function loadLocalData() {
+  const saved = localStorage.getItem('perpus_db');
+  if (saved) {
+    try { DB = JSON.parse(saved); } catch(e) {}
+  }
+  if (!DB.books.length) DB.books = DEMO_BOOKS;
+  if (!DB.logs.length)  DB.logs  = DEMO_LOGS;
+}
+
+function saveLocalData() {
+  localStorage.setItem('perpus_db', JSON.stringify(DB));
+}
+
+// ─────────────────────────────────────────────────────
+//  GOOGLE SHEETS INTEGRATION (via Apps Script)
+// ─────────────────────────────────────────────────────
+async function fetchFromSheets() {
+  if (!CONFIG.SHEETS_URL) {
+    updateOnlineBadge(false);
+    return;
+  }
+  try {
+    const r = await fetch(CONFIG.SHEETS_URL + '?action=getAll', { mode:'cors' });
+    const data = await r.json();
+    if (data.books) DB.books = data.books;
+    if (data.logs)  DB.logs  = data.logs;
+    saveLocalData();
+    updateOnlineBadge(true);
+    renderHome(); renderKatalog();
+  } catch(e) {
+    updateOnlineBadge(false);
+  }
+}
+
+async function pushToSheets(action, payload) {
+  if (!CONFIG.SHEETS_URL) return { ok: true };
+  try {
+    const r = await fetch(CONFIG.SHEETS_URL, {
+      method: 'POST', mode: 'cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action, ...payload }),
+    });
+    return await r.json();
+  } catch(e) {
+    return { ok: false, error: e.message };
+  }
+}
+
+function updateOnlineBadge(online) {
+  const b = document.getElementById('online-badge');
+  b.textContent = online ? 'ONLINE' : 'OFFLINE';
+  b.style.background = online ? 'var(--amber)' : 'rgba(255,255,255,0.2)';
+}
+
+// ─────────────────────────────────────────────────────
+//  PAGE NAVIGATION
+// ─────────────────────────────────────────────────────
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+
+  if (name === 'scan') {
+    startScanner();
+  } else {
+    stopScanner();
+    resetScanUI();
+  }
+  if (name === 'katalog') renderKatalog();
+  if (name === 'home')    renderHome();
+  if (name === 'admin' && isAdminLoggedIn) renderAdminLog();
+}
+
+// ─────────────────────────────────────────────────────
+//  HOME RENDER
+// ─────────────────────────────────────────────────────
+function renderHome() {
+  const total     = DB.books.length;
+  const available = DB.books.filter(b => b.status === 'Tersedia').length;
+  const borrowed  = DB.books.filter(b => b.status === 'Dipinjam').length;
+  document.getElementById('stat-total').textContent     = total;
+  document.getElementById('stat-available').textContent = available;
+  document.getElementById('stat-borrowed').textContent  = borrowed;
+
+  const logEl = document.getElementById('recent-log');
+  const recent = [...DB.logs].reverse().slice(0, 5);
+  if (!recent.length) {
+    logEl.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Belum ada aktivitas</div></div>';
+    return;
+  }
+  logEl.innerHTML = recent.map(l => `
+    <div class="log-item">
+      <div class="log-dot${l.status === 'Dikembalikan' ? ' returned' : ''}"></div>
+      <div style="flex:1;min-width:0">
+        <div class="log-name">${esc(l.borrower)}</div>
+        <div class="log-book">${esc(l.bookTitle)}</div>
+        <div class="log-time">${l.status === 'Dikembalikan' ? '↩ Dikembalikan ' + formatDate(l.returnDate) : '📤 Dipinjam ' + formatDate(l.borrowDate)}</div>
+      </div>
+      <span class="log-badge ${l.status === 'Aktif' ? 'badge-active' : 'badge-returned'}">${l.status}</span>
+    </div>
+  `).join('');
+}
+
+// ─────────────────────────────────────────────────────
+//  QR SCANNER (via jsQR)
+// ─────────────────────────────────────────────────────
+function startScanner() {
+  if (scanStream) return;
+  const video = document.getElementById('qr-video');
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+    .then(stream => {
+      scanStream = stream;
+      video.srcObject = stream;
+      video.play();
+      loadJsQR(() => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        scanInterval = setInterval(() => {
+          if (video.readyState === video.HAVE_ENOUGH_DATA) {
+            canvas.width  = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0);
+            const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            if (window.jsQR) {
+              const code = window.jsQR(img.data, img.width, img.height, { inversionAttempts: 'dontInvert' });
+              if (code && code.data) {
+                onQRScanned(code.data);
+                clearInterval(scanInterval);
+              }
+            }
+          }
+        }, 300);
+      });
+    })
+    .catch(() => {
+      document.getElementById('scanner-hint').textContent = '⚠️ Kamera tidak dapat diakses';
+    });
+}
+
+function loadJsQR(cb) {
+  if (window.jsQR) { cb(); return; }
+  const s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js';
+  s.onload = cb;
+  document.head.appendChild(s);
+}
+
+function stopScanner() {
+  if (scanStream) {
+    scanStream.getTracks().forEach(t => t.stop());
+    scanStream = null;
+  }
+  clearInterval(scanInterval);
+}
+
+function resetScanUI() {
+  document.getElementById('book-result').style.display = 'none';
+  document.getElementById('borrow-form').style.display = 'none';
+  document.getElementById('return-form').style.display = 'none';
+  document.getElementById('manual-id').value = '';
+  document.getElementById('borrower-name').value = '';
+  activeBookId = null;
+  if (scanInterval === null && document.getElementById('page-scan').classList.contains('active')) {
+    startScanner();
+  }
+}
+
+function onQRScanned(data) {
+  stopScanner();
+  document.getElementById('scanner-hint').textContent = '✅ QR Code terbaca!';
+  lookupBook(data.trim().toUpperCase());
+}
+
+function lookupManual() {
+  const id = document.getElementById('manual-id').value.trim().toUpperCase();
+  if (!id) { showToast('Masukkan ID buku dulu', 'error'); return; }
+  lookupBook(id);
+}
+
+function lookupBook(id) {
+  const book = DB.books.find(b => b.id === id);
+  if (!book) {
+    showToast('Buku tidak ditemukan: ' + id, 'error');
+    return;
+  }
+  activeBookId = id;
+  document.getElementById('res-title').textContent  = book.title;
+  document.getElementById('res-author').textContent = '✍️ ' + book.author;
+  document.getElementById('res-category').textContent = '🏷️ ' + book.category;
+
+  const statusEl = document.getElementById('res-status');
+  if (book.status === 'Tersedia') {
+    statusEl.textContent = '✅ Tersedia';
+    statusEl.className = 'result-status status-available';
+    document.getElementById('borrow-form').style.display = 'block';
+    document.getElementById('return-form').style.display = 'none';
+  } else {
+    statusEl.textContent = '📤 Sedang Dipinjam';
+    statusEl.className = 'result-status status-borrowed';
+    document.getElementById('borrow-form').style.display = 'none';
+    document.getElementById('return-form').style.display = 'block';
+    // Find borrower
+    const activeLog = DB.logs.find(l => l.bookId === id && l.status === 'Aktif');
+    document.getElementById('return-info').textContent =
+      activeLog ? `Dipinjam oleh: ${activeLog.borrower} · ${formatDate(activeLog.borrowDate)}` : '';
+  }
+  document.getElementById('book-result').style.display = 'block';
+}
+
+// ─────────────────────────────────────────────────────
+//  BORROW
+// ─────────────────────────────────────────────────────
+async function submitBorrow() {
+  const name = document.getElementById('borrower-name').value.trim();
+  if (!name) { showToast('Masukkan nama peminjam dulu', 'error'); return; }
+  if (!activeBookId) return;
+
+  const btn = document.querySelector('#borrow-form .btn');
+  btn.innerHTML = '<div class="spinner"></div> Menyimpan...';
+  btn.disabled = true;
+
+  const book = DB.books.find(b => b.id === activeBookId);
+  const now = nowStr();
+  const logId = 'L' + Date.now();
+
+  // Update local
+  book.status = 'Dipinjam';
+  DB.logs.push({ id: logId, bookId: activeBookId, bookTitle: book.title, borrower: name, borrowDate: now, returnDate: null, status: 'Aktif' });
+  saveLocalData();
+
+  // Push to Sheets
+  await pushToSheets('borrow', { bookId: activeBookId, borrower: name, date: now, logId });
+
+  btn.innerHTML = '📖 Pinjam Sekarang';
+  btn.disabled = false;
+
+  showToast('✅ Berhasil dipinjam! Selamat membaca, ' + name + '!', 'success');
+  renderHome();
+
+  setTimeout(() => { showPage('home'); }, 1800);
+}
+
+// ─────────────────────────────────────────────────────
+//  RETURN
+// ─────────────────────────────────────────────────────
+async function submitReturn() {
+  if (!activeBookId) return;
+  const btn = document.querySelector('#return-form .btn');
+  btn.innerHTML = '<div class="spinner"></div> Menyimpan...';
+  btn.disabled = true;
+
+  const book = DB.books.find(b => b.id === activeBookId);
+  const now = nowStr();
+  const activeLog = DB.logs.find(l => l.bookId === activeBookId && l.status === 'Aktif');
+
+  // Update local
+  book.status = 'Tersedia';
+  if (activeLog) { activeLog.returnDate = now; activeLog.status = 'Dikembalikan'; }
+  saveLocalData();
+
+  // Push to Sheets
+  await pushToSheets('return', { bookId: activeBookId, date: now, logId: activeLog?.id });
+
+  btn.innerHTML = '✅ Kembalikan Buku Ini';
+  btn.disabled = false;
+
+  showToast('✅ Buku berhasil dikembalikan. Terima kasih!', 'success');
+  renderHome();
+  setTimeout(() => { showPage('home'); }, 1800);
+}
+
+// ─────────────────────────────────────────────────────
+//  KATALOG
+// ─────────────────────────────────────────────────────
+function renderKatalog(books) {
+  const query = document.getElementById('search-input').value.toLowerCase();
+  let list = DB.books.filter(b => {
+    const matchQuery = !query || b.title.toLowerCase().includes(query) || b.author.toLowerCase().includes(query);
+    const matchFilter = filterStatus === 'all' || b.status === filterStatus;
+    return matchQuery && matchFilter;
+  });
+
+  const el = document.getElementById('book-list');
+  if (!list.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">Buku tidak ditemukan</div></div>';
+    return;
+  }
+  el.innerHTML = list.map((b, i) => `
+    <div class="book-item">
+      <div class="book-num">${i+1}</div>
+      <div class="book-info">
+        <div class="book-title">${esc(b.title)}</div>
+        <div class="book-author">${esc(b.author)}</div>
+        <div class="book-id">${b.id} · ${esc(b.category)}</div>
+      </div>
+      <span class="result-status ${b.status === 'Tersedia' ? 'status-available' : 'status-borrowed'}" style="white-space:nowrap;font-size:0.62rem">
+        ${b.status === 'Tersedia' ? '✅ Ada' : '📤 Dipinjam'}
+      </span>
+    </div>
+  `).join('');
+}
+
+function filterBooks() { renderKatalog(); }
+
+function setFilter(val, el) {
+  filterStatus = val;
+  document.querySelectorAll('#filter-row .btn').forEach(b => b.classList.remove('active-filter'));
+  el.classList.add('active-filter');
+  renderKatalog();
+}
+
+// ─────────────────────────────────────────────────────
+//  ADMIN
+// ─────────────────────────────────────────────────────
+function checkPin() {
+  const pin = document.getElementById('admin-pin').value;
+  if (pin === CONFIG.ADMIN_PIN) {
+    isAdminLoggedIn = true;
+    document.getElementById('admin-locked-view').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
+    populateQRSelect();
+    renderAdminLog();
+  } else {
+    showToast('PIN salah', 'error');
+    document.getElementById('admin-pin').value = '';
+  }
+}
+
+function adminLogout() {
+  isAdminLoggedIn = false;
+  document.getElementById('admin-locked-view').style.display = 'block';
+  document.getElementById('admin-panel').style.display = 'none';
+  document.getElementById('admin-pin').value = '';
+}
+
+function adminTab(name, el) {
+  ['tambah','log','qr'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t === name ? 'block' : 'none';
+  });
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  if (name === 'log') renderAdminLog();
+  if (name === 'qr')  populateQRSelect();
+}
+
+async function addBook() {
+  const id  = document.getElementById('new-id').value.trim().toUpperCase();
+  const tit = document.getElementById('new-title').value.trim();
+  const aut = document.getElementById('new-author').value.trim();
+  const cat = document.getElementById('new-category').value.trim();
+  if (!id || !tit || !aut) { showToast('Lengkapi data buku dulu', 'error'); return; }
+  if (DB.books.find(b => b.id === id)) { showToast('ID sudah digunakan', 'error'); return; }
+
+  const btn = document.getElementById('btn-add-book');
+  btn.innerHTML = '<div class="spinner"></div> Menyimpan...'; btn.disabled = true;
+
+  const book = { id, title: tit, author: aut, category: cat || 'Umum', status: 'Tersedia' };
+  DB.books.push(book);
+  saveLocalData();
+  await pushToSheets('addBook', { book });
+
+  btn.innerHTML = '➕ Tambah ke Katalog'; btn.disabled = false;
+  showToast('✅ Buku berhasil ditambahkan!', 'success');
+  document.getElementById('new-id').value = '';
+  document.getElementById('new-title').value = '';
+  document.getElementById('new-author').value = '';
+  document.getElementById('new-category').value = '';
+  populateQRSelect();
+  renderKatalog();
+  renderHome();
+}
+
+function renderAdminLog() {
+  const el = document.getElementById('full-log');
+  const logs = [...DB.logs].reverse();
+  if (!logs.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Belum ada peminjaman</div></div>';
+    return;
+  }
+  el.innerHTML = logs.map(l => `
+    <div class="log-item">
+      <div class="log-dot${l.status === 'Dikembalikan' ? ' returned' : ''}"></div>
+      <div style="flex:1;min-width:0">
+        <div class="log-name">${esc(l.borrower)}</div>
+        <div class="log-book">${esc(l.bookTitle)}</div>
+        <div class="log-time">Pinjam: ${l.borrowDate}${l.returnDate ? ' · Kembali: '+l.returnDate : ''}</div>
+      </div>
+      <span class="log-badge ${l.status === 'Aktif' ? 'badge-active' : 'badge-returned'}">${l.status}</span>
+    </div>
+  `).join('');
+}
+
+// ─────────────────────────────────────────────────────
+//  QR CODE GENERATION
+// ─────────────────────────────────────────────────────
+function populateQRSelect() {
+  const sel = document.getElementById('qr-select');
+  sel.innerHTML = '<option value="">— Pilih buku —</option>' +
+    DB.books.map(b => `<option value="${b.id}">${b.id} · ${b.title}</option>`).join('');
+}
+
+function previewQR() {
+  const id = document.getElementById('qr-select').value;
+  if (!id) { document.getElementById('qr-preview').style.display='none'; return; }
+  const book = DB.books.find(b => b.id === id);
+  const url = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(id)}`;
+  document.getElementById('qr-img').src = url;
+  document.getElementById('qr-book-name').textContent = book.title;
+  document.getElementById('qr-book-id').textContent = id;
+  document.getElementById('qr-preview').style.display = 'block';
+}
+
+function printQR() {
+  const id = document.getElementById('qr-select').value;
+  if (!id) return;
+  const book = DB.books.find(b => b.id === id);
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(id)}`;
+  const w = window.open('','_blank');
+  w.document.write(`
+    <html><body style="text-align:center;font-family:sans-serif;padding:20px">
+    <div style="display:inline-block;border:2px solid #2D6A4F;border-radius:12px;padding:20px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:#2D6A4F;margin-bottom:8px">POJOK BACA KARANGWARU</div>
+      <img src="${qrUrl}" style="width:180px;height:180px;display:block;margin:0 auto">
+      <div style="font-size:14px;font-weight:700;margin-top:10px;max-width:180px">${book.title}</div>
+      <div style="font-size:11px;color:#6B7C75;margin-top:4px;font-family:monospace">${id}</div>
+    </div>
+    <script>window.onload=()=>window.print()<\/script>
+    </body></html>
+  `);
+}
+
+// ─────────────────────────────────────────────────────
+//  UTILITIES
+// ─────────────────────────────────────────────────────
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+function nowStr() {
+  return new Date().toLocaleString('id-ID', { dateStyle:'short', timeStyle:'short' });
+}
+
+function formatDate(str) {
+  if (!str) return '—';
+  return str;
+}
+
+function esc(str) {
+  if (!str) return '';
+  return str.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
 </script>
 
 </body>
 </html>
+
